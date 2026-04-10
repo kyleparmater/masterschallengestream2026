@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Masters Pick 'Em Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #eef3e6;
+            background-image: radial-gradient(circle at 10% 20%, rgba(50, 80, 30, 0.05) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            color: #1e3a2f;
+            padding: 24px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .masters-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 20px 16px 24px;
+            background: linear-gradient(135deg, #0b3b2f 0%, #1a5c48 100%);
+            border-radius: 48px 48px 32px 32px;
+            color: #f7f3e0;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .masters-header::before {
+            content: "⛳";
+            font-size: 100px;
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        .masters-header h1 {
+            font-family: 'Marcellus', serif;
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        .masters-header p {
+            font-size: 1rem;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+        .masters-header .date-location {
+            font-size: 0.85rem;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255, 245, 200, 0.5);
+            display: inline-block;
+        }
+        
+        /* Collapsible Streaming Section */
+        .streaming-container {
+            margin-bottom: 24px;
+        }
+        .streaming-header {
+            background: linear-gradient(135deg, #1a5c48 0%, #2a7a60 100%);
+            border-radius: 60px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .streaming-header:hover {
+            background: linear-gradient(135deg, #2a7a60 0%, #3a9070 100%);
+            transform: translateY(-1px);
+        }
+        .streaming-header h3 {
+            color: white;
+            font-family: 'Marcellus', serif;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .streaming-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .streaming-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .streaming-content {
+            background: white;
+            border-radius: 24px;
+            margin-top: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .streaming-content.collapsed {
+            display: none;
+        }
+        .watch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .watch-card {
+            background: #f4f8ef;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .watch-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .watch-card h4 {
+            color: #1a573f;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .watch-card p {
+            font-size: 12px;
+            color: #5f7e6b;
+            margin-bottom: 12px;
+        }
+        .watch-btn {
+            display: inline-block;
+            background: #1e6b4c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .watch-btn:hover {
+            background: #2a8a62;
+        }
+        .free-badge {
+            display: inline-block;
+            background: #c9a03d;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .live-badge {
+            display: inline-block;
+            background: #ff0000;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            vertical-align: middle;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .schedule-item {
+            background: #fefef7;
+            border-radius: 16px;
+            padding: 12px;
+            border-left: 4px solid #c9a03d;
+        }
+        .schedule-item strong {
+            color: #1a573f;
+        }
+        .platform-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .platform-link {
+            background: #e8ece8;
+            padding: 8px 16px;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #1e5a44;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .platform-link:hover {
+            background: #d4e4d4;
+        }
+        
+        /* Section Toggle Buttons */
+        .section-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+            justify-content: center;
+        }
+        .section-btn {
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f2f5ea;
+            color: #1e5a44;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            font-family: 'Inter', sans-serif;
+        }
+        .section-btn.active {
+            background: #1e6b4c;
+            color: white;
+            box-shadow: 0 6px 14px rgba(30, 107, 76, 0.35);
+            transform: translateY(-1px);
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2ecd9;
+        }
+        .card h2 {
+            font-family: 'Marcellus', serif;
+            font-size: 1.7rem;
+            font-weight: 500;
+            color: #1a4f3a;
+            margin-bottom: 18px;
+            border-left: 5px solid #c9a03d;
+            padding-left: 16px;
+        }
+        .pool-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        .pool-table th, .pool-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0ebd8;
+        }
+        .pool-table th {
+            background: #f4f8ef;
+            font-weight: 600;
+            color: #1a573f;
+            cursor: pointer;
+            user-select: none;
+        }
+        .pool-table th:hover {
+            background: #e6f0df;
+        }
+        .pool-table tr {
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .pool-table tr:hover {
+            background: #fafdf5;
+        }
+        .picks-detail {
+            display: none;
+            background: #fefef7;
+            padding: 20px;
+            margin-top: 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            border: 1px solid #dbebcf;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+        }
+        .picks-detail.show {
+            display: block;
+        }
+        .picks-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .pick-card {
+            background: white;
+            border-radius: 20px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex: 1 1 150px;
+            text-align: center;
+            border-left: 4px solid #1e6b4c;
+        }
+        .pick-card.highest-score {
+            background: #efefef;
+            color: #888;
+            border-left-color: #b0b0a8;
+            text-decoration: line-through;
+            filter: grayscale(0.15);
+        }
+        .tier-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #c9a03d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .player-name {
+            font-weight: 600;
+            margin: 8px 0 4px;
+            font-size: 0.9rem;
+        }
+        .score-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .score-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 10px;
+            background: #f4f8ef;
+            border-radius: 10px;
+            min-width: 52px;
+        }
+        .score-box .score-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #7f8c7a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .score-box .score-value {
+            font-weight: 600;
+            color: #1a4f3a;
+            font-size: 14px;
+        }
+        .pick-card.highest-score .score-box {
+            background: #e5e5e5;
+        }
+        .pick-card.highest-score .score-box .score-value {
+            color: #888;
+        }
+        .scores-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 700px;
+        }
+        .scores-table th, .scores-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2ecd9;
+            white-space: nowrap;
+        }
+        .scores-table th {
+            background: #f0f6ea;
+            font-weight: 600;
+            color: #1a573f;
+            position: sticky;
+            top: 0;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 48px;
+            font-size: 1rem;
+            color: #5f7e6b;
+        }
+        .error {
+            color: #b34e4e;
+        }
+        @media (max-width: 750px) {
+            body { padding: 16px; }
+            .masters-header h1 { font-size: 1.5rem; }
+            .card { padding: 16px; }
+            .pool-table th, .pool-table td { padding: 10px 6px; font-size: 0.85rem; }
+            .section-btn { padding: 8px 20px; font-size: 1rem; }
+            .watch-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="masters-header">
+        <h1>2026 6th Annual Masters Pick 'Em Challenge</h1>
+        <p>Augusta National · April 9–12, 2026</p>
+        <div class="date-location">⛳____________________________🏌️</div>
+    </div>
+
+    <!-- Collapsible Streaming Section -->
+    <div class="streaming-container">
+        <div class="streaming-header" id="streamingHeader">
+            <h3>📺 Live Streaming Options <span class="free-badge">Free</span></h3>
+            <button class="streaming-toggle" id="streamingToggle">▲</button>
+        </div>
+        <div class="streaming-content" id="streamingContent">
+            <!-- Live Now Banner (dynamic - shows during tournament hours) -->
+            <div id="liveNowBanner" style="background: #1a573f; border-radius: 16px; padding: 12px 20px; margin-bottom: 20px; display: none; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="background: #ff0000; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">LIVE</span>
+                    <span style="color: white; font-weight: 600;">Masters Tournament 2026</span>
+                    <span style="color: white; font-size: 13px;">Featured Groups now playing</span>
+                </div>
+            </div>
+            
+            <!-- Stream Selection Cards - Users can choose ANY of these -->
+            <div class="watch-grid">
+                <div class="watch-card">
+                    <h4>🏆 Masters Official <span class="live-badge" id="mastersLiveBadge" style="display: none;">LIVE</span></h4>
+                    <p>Featured Groups • Amen Corner • Holes 15-16 • Main Broadcast</p>
+                    <button class="watch-btn" onclick="openStream('https://www.masters.com', 'MastersOfficial')">
+                        Watch on Masters.com →
+                    </button>
+                    <p style="margin-top: 8px; font-size: 11px; color: #7f8c7a;">🎯 Best quality • No sign-up required</p>
+                </div>
+            </div>
+            
+            <!-- Broadcast Schedule -->
+            <div class="schedule-grid">
+                <div class="schedule-item">
+                    <strong>Thursday & Friday (Rounds 1-2)</strong><br>
+                    9:15 AM - All day: Masters.com (Featured Groups)<br>
+                    All day: Masters App
+                </div>
+                <div class="schedule-item">
+                    <strong>Saturday & Sunday (Rounds 3-4)</strong><br>
+                    9:15 AM - All day: Masters.com (Featured Groups)<br>
+                    All day: Masters App
+                </div>
+            </div>
+            
+            <!-- Quick Platform Links -->
+            <div class="platform-links">
+                <a href="#" onclick="openStream('https://www.masters.com', 'Masters'); return false;" class="platform-link">🏌️ Masters.com</a>
+            </div>
+            
+            <p style="margin-top: 16px; font-size: 11px; color: #aaa; text-align: center;">
+                🌎 <strong>All streams open in a clean player window</strong> — you can watch while checking the leaderboard!<br>
+                Masters.com is completely free worldwide. Other services offer free trials for new users.
+            </p>
+        </div>
+    </div>
+
+    <div class="section-buttons">
+        <button class="section-btn active" data-section="pool">🏆 Pool Standings</button>
+        <button class="section-btn" data-section="scores">📊 Live Leaderboard</button>
+    </div>
+    
+    <div id="poolSection" class="section">
+        <div class="card">
+            <h2>👥 Pool Standings</h2>
+            <div style="overflow-x: auto;">
+                <table class="pool-table" id="poolTable">
+                    <thead>
+                        <tr><th>Rank</th><th data-sort="name">Name ⬍</th><th data-sort="score">Total Score</th><th data-sort="strokes">Total Strokes</th></tr>
+                    </thead>
+                    <tbody id="poolBody">
+                        <tr><td colspan="4" class="loading">Loading pool data......</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="picksModal" class="picks-detail"></div>
+    </div>
+    
+    <div id="scoresSection" class="section" style="display:none;">
+        <div class="card">
+            <h2>⛳ Live Leaderboard · Round in progress</h2>
+            <div class="scores-wrapper">
+                <table class="scores-table" id="fullScoresTable">
+                    <thead id="scoresHeader"><tr><th>Loading...</th></tr></thead>
+                    <tbody id="scoresBody"><tr><td class="loading">Fetching live scores...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== STREAMING FUNCTION ==========
+    // Opens any stream in a clean popup window
+    function openStream(url, name) {
+        const width = 1280;
+        const height = 720;
+        const left = (screen.width - width) / 2;
+        const top = (screen.height - height) / 2;
+        
+        const features = `width=${width},height=${height},left=${left},top=${top},toolbar=0,location=0,menubar=0,status=0,scrollbars=0,resizable=1`;
+        
+        window.open(url, `${name}Stream`, features);
+        return false;
+    }
+    
+    // Show "LIVE" badge during tournament days (April 9-12, 2026)
+    function updateLiveStatus() {
+        const today = new Date();
+        const year = 2026;
+        const startDate = new Date(year, 3, 9); // April 9 (month is 0-indexed)
+        const endDate = new Date(year, 3, 12);  // April 12
+        
+        if (today >= startDate && today <= endDate) {
+            const badges = document.querySelectorAll('.live-badge');
+            badges.forEach(badge => {
+                badge.style.display = 'inline-block';
+            });
+            const liveBanner = document.getElementById('liveNowBanner');
+            if (liveBanner) {
+                liveBanner.style.display = 'flex';
+            }
+        }
+    }
+    
+    // ========== CONFIGURATION ==========
+    const POOL_TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmpgOY8hPqPgrMutaUx8-JqnSmM0gr6L1LpV2n1mCaYjKcwZh2LYV5U8QjsDANZJe-7cV2_T0sw-oF/pub?gid=1122278903&single=true&output=tsv";
+    const SCORES_TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmpgOY8hPqPgrMutaUx8-JqnSmM0gr6L1LpV2n1mCaYjKcwZh2LYV5U8QjsDANZJe-7cV2_T0sw-oF/pub?gid=658841980&single=true&output=tsv";
+    
+    // Global data
+    let poolData = [];
+    let fullScoresData = [];
+    let scoresHeader = [];
+    let scoresMap = new Map();
+    let todayMap = new Map();
+    
+    // Collapsible streaming section
+    const streamingToggle = document.getElementById('streamingToggle');
+    const streamingContent = document.getElementById('streamingContent');
+    let isStreamingVisible = true;
+    
+    streamingToggle.addEventListener('click', () => {
+        if (isStreamingVisible) {
+            streamingContent.classList.add('collapsed');
+            streamingToggle.innerHTML = '▼';
+            isStreamingVisible = false;
+        } else {
+            streamingContent.classList.remove('collapsed');
+            streamingToggle.innerHTML = '▲';
+            isStreamingVisible = true;
+        }
+    });
+    
+    async function fetchTSV(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        const rows = text.split(/\r?\n/).filter(row => row.trim().length > 0);
+        return rows.map(row => row.split(/\t/));
+    }
+    
+    function parsePoolData(tsvRows) {
+        if (tsvRows.length < 2) return [];
+        const headers = tsvRows[0];
+        const nameIdx = headers.findIndex(h => h.toLowerCase().includes("name"));
+        const strokesIdx = headers.findIndex(h => h.toLowerCase().includes("total strokes") || h.toLowerCase().includes("strokes"));
+        const scoreIdx = headers.findIndex(h => h.toLowerCase().includes("total score") || h.toLowerCase().includes("score"));
+        const startPickIdx = nameIdx + 1;
+        const endPickIdx = startPickIdx + 6;
+        
+        const parsed = [];
+        for (let i = 1; i < tsvRows.length; i++) {
+            const row = tsvRows[i];
+            if (row.length <= nameIdx) continue;
+            const name = row[nameIdx]?.trim();
+            if (!name) continue;
+            const totalStrokes = strokesIdx >= 0 ? parseFloat(row[strokesIdx]) : NaN;
+            const totalScore = scoreIdx >= 0 ? row[scoreIdx]?.trim() : "";
+            const picks = [];
+            for (let p = startPickIdx; p <= endPickIdx && p < row.length; p++) {
+                if (row[p] && row[p].trim()) picks.push(row[p].trim());
+            }
+            parsed.push({
+                name: name,
+                totalStrokes: isNaN(totalStrokes) ? 0 : totalStrokes,
+                totalScore: totalScore,
+                picks: picks
+            });
+        }
+        return parsed;
+    }
+    
+    function parseScores(tsvRows) {
+        if (tsvRows.length < 2) return { data: [], header: [], scoreMap: new Map(), todayScoreMap: new Map() };
+        
+        const allHeaders = tsvRows[0];
+        
+        const startCol = 1;
+        const endCol = Math.min(11, allHeaders.length - 1);
+        let displayHeaders = [];
+        let displayRows = [];
+        if (startCol <= endCol) {
+            displayHeaders = allHeaders.slice(startCol, endCol + 1);
+            for (let i = 1; i < tsvRows.length; i++) {
+                const row = tsvRows[i];
+                if (row.length <= startCol) continue;
+                const selectedRow = row.slice(startCol, endCol + 1);
+                const rowObj = {};
+                displayHeaders.forEach((h, idx) => {
+                    rowObj[h] = (selectedRow[idx] || "").trim();
+                });
+                displayRows.push(rowObj);
+            }
+        }
+        
+        const playerIdx = allHeaders.findIndex(h => h.toLowerCase() === "player");
+        const cleanScoreIdx = allHeaders.findIndex(h => h.toLowerCase() === "clean score" || h.toLowerCase().includes("clean"));
+        const todayIdx = allHeaders.findIndex(h => h.toLowerCase().trim() === "today");
+        const map = new Map();
+        const tMap = new Map();
+        
+        if (playerIdx !== -1 && cleanScoreIdx !== -1) {
+            for (let i = 1; i < tsvRows.length; i++) {
+                const row = tsvRows[i];
+                if (row.length <= playerIdx) continue;
+                const player = row[playerIdx]?.trim();
+                if (!player) continue;
+                const score = row[cleanScoreIdx]?.trim();
+                if (score) map.set(player, score);
+                if (todayIdx !== -1 && row.length > todayIdx) {
+                    const todayVal = row[todayIdx]?.trim();
+                    if (todayVal) tMap.set(player, todayVal);
+                }
+            }
+        }
+        
+        return { data: displayRows, header: displayHeaders, scoreMap: map, todayScoreMap: tMap };
+    }
+    
+    function getPlayerScore(playerName) {
+        if (!playerName) return "—";
+        return scoresMap.get(playerName) || "—";
+    }
+    
+    function getPlayerToday(playerName) {
+        if (!playerName) return "—";
+        return todayMap.get(playerName) || "—";
+    }
+    
+    function findHighestScorePlayer(picks) {
+        let highestPlayer = null;
+        let highestValue = -Infinity;
+        for (const player of picks) {
+            const scoreStr = getPlayerScore(player);
+            if (scoreStr !== "—") {
+                let numValue;
+                if (scoreStr === "E" || scoreStr === "0") numValue = 0;
+                else numValue = parseInt(scoreStr, 10);
+                if (!isNaN(numValue) && numValue > highestValue) {
+                    highestValue = numValue;
+                    highestPlayer = player;
+                }
+            }
+        }
+        return highestPlayer;
+    }
+    
+    function renderPool() {
+        const tbody = document.getElementById("poolBody");
+        if (!poolData.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="loading">No pool data loaded</td></tr>';
+            return;
+        }
+        const sorted = [...poolData].sort((a,b) => {
+            const aScore = parseInt(a.totalScore, 10);
+            const bScore = parseInt(b.totalScore, 10);
+            if (!isNaN(aScore) && !isNaN(bScore)) return aScore - bScore;
+            return 0;
+        });
+
+        let lastScore = null;
+        let lastRank = 0;
+        sorted.forEach((entry, i) => {
+            if (entry.totalScore !== lastScore) {
+                lastRank = i + 1;
+                lastScore = entry.totalScore;
+            }
+            entry._rank = String(lastRank);
+        });
+        const rankCounts = {};
+        sorted.forEach(e => { rankCounts[e._rank] = (rankCounts[e._rank] || 0) + 1; });
+        sorted.forEach(e => {
+            if (rankCounts[e._rank] > 1) e._rank = "T" + e._rank;
+        });
+
+        tbody.innerHTML = sorted.map(entry => `
+            <tr data-name="${escapeHtml(entry.name)}">
+                <td style="font-weight:700; color:#c9a03d;">${escapeHtml(entry._rank)}</td>
+                <td>${escapeHtml(entry.name)}</td>
+                <td>${escapeHtml(entry.totalScore)}</td>
+                <td>${entry.totalStrokes}</td>
+            </tr>
+        `).join("");
+        
+        document.querySelectorAll("#poolTable tbody tr").forEach(row => {
+            row.addEventListener("click", () => {
+                const name = row.getAttribute("data-name");
+                const entry = poolData.find(p => p.name === name);
+                if (entry) showPicksForPlayer(entry);
+            });
+        });
+    }
+    
+    function showPicksForPlayer(entry) {
+        const highestPlayer = findHighestScorePlayer(entry.picks);
+        const picksHtml = entry.picks.map((player, idx) => {
+            const score = getPlayerScore(player);
+            const today = getPlayerToday(player);
+            const isHighest = (player === highestPlayer);
+            return `
+                <div class="pick-card ${isHighest ? 'highest-score' : ''}">
+                    <div class="tier-label">Tier ${idx+1}</div>
+                    <div class="player-name">${escapeHtml(player)}</div>
+                    <div class="score-row">
+                        <div class="score-box">
+                            <div class="score-label">Total</div>
+                            <div class="score-value">${escapeHtml(score)}</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-label">Today</div>
+                            <div class="score-value">${escapeHtml(today)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+        const modalDiv = document.getElementById("picksModal");
+        modalDiv.innerHTML = `
+            <div style="font-weight:bold; margin-bottom:12px; font-size:1.2rem;">🏆 ${escapeHtml(entry.name)}'s Picks</div>
+            <div class="picks-grid">${picksHtml}</div>
+            <div style="margin-top:18px; font-size:12px; color:#7f8c7a;">* Greyed out = highest score (dropped from total)</div>
+        `;
+        modalDiv.classList.add("show");
+        modalDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    
+    function renderFullScores() {
+        const thead = document.getElementById("scoresHeader");
+        const tbody = document.getElementById("scoresBody");
+        if (!fullScoresData.length || !scoresHeader.length) {
+            thead.innerHTML = '<tr><th>No scores data</th></tr>';
+            tbody.innerHTML = '<tr><td class="loading">Unable to load leaderboard</td></tr>';
+            return;
+        }
+        thead.innerHTML = `<tr>${scoresHeader.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>`;
+        tbody.innerHTML = fullScoresData.map(row => {
+            return `<tr>${scoresHeader.map(h => `<td>${escapeHtml(row[h] || '')}</td>`).join('')}</tr>`;
+        }).join('');
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    async function loadAllData() {
+        try {
+            const poolTSV = await fetchTSV(POOL_TSV_URL);
+            poolData = parsePoolData(poolTSV);
+            
+            const scoresTSV = await fetchTSV(SCORES_TSV_URL);
+            const { data, header, scoreMap, todayScoreMap } = parseScores(scoresTSV);
+            fullScoresData = data;
+            scoresHeader = header;
+            scoresMap = scoreMap;
+            todayMap = todayScoreMap;
+            
+            renderPool();
+            renderFullScores();
+            updateLiveStatus();
+        } catch(err) {
+            console.error(err);
+            document.getElementById("poolBody").innerHTML = `<tr><td colspan="3" class="error">Error: ${err.message}</td></tr>`;
+        }
+    }
+    
+    function initTabs() {
+        const btns = document.querySelectorAll('.section-btn');
+        const poolSection = document.getElementById('poolSection');
+        const scoresSection = document.getElementById('scoresSection');
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.getAttribute('data-section');
+                btns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (section === 'pool') {
+                    poolSection.style.display = 'block';
+                    scoresSection.style.display = 'none';
+                } else {
+                    poolSection.style.display = 'none';
+                    scoresSection.style.display = 'block';
+                    renderFullScores();
+                }
+            });
+        });
+    }
+    
+    function initSorting() {
+        const headers = document.querySelectorAll('#poolTable th');
+        headers.forEach(th => {
+            th.addEventListener('click', () => {
+                const sortKey = th.getAttribute('data-sort');
+                if (!sortKey) return;
+                if (sortKey === 'name') {
+                    poolData.sort((a,b) => a.name.localeCompare(b.name));
+                } else if (sortKey === 'score') {
+                    poolData.sort((a,b) => parseInt(a.totalScore,10) - parseInt(b.totalScore,10));
+                } else if (sortKey === 'strokes') {
+                    poolData.sort((a,b) => a.totalStrokes - b.totalStrokes);
+                }
+                renderPool();
+            });
+        });
+    }
+    
+    loadAllData().then(() => {
+        initTabs();
+        initSorting();
+    });
+</script>
+</body>
+</html>
